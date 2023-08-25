@@ -1,6 +1,6 @@
 /// The source code for Mersenne61 was taken from
 /// https://github.com/anderspkd/secure-computation-library/blob/master/src/scl/math/mersenne61.cc
-use super::rng::Rng;
+use crate::utils::prg::Prg;
 
 #[derive(Clone)]
 pub struct Mersenne61 {
@@ -21,7 +21,7 @@ pub trait MersenneField {
 
     fn inverse(&self) -> Self;
 
-    fn random(rng: Rng) -> Self;
+    fn random(rng: &Prg) -> Self;
 }
 
 impl MersenneField for Mersenne61 {
@@ -62,7 +62,7 @@ impl MersenneField for Mersenne61 {
         while new_r != 0 {
             let q = r / new_r;
 
-            // Swaps and operates on k and new_k
+            // Swaps and operates on k and new_k, and r and new_r
             swap_and_operate(&mut k, &mut new_k, q);
             swap_and_operate(&mut r, &mut new_r, q);
         }
@@ -98,7 +98,7 @@ impl MersenneField for Mersenne61 {
         }
     }
 
-    fn random(rng: Rng) -> Self {
+    fn random(rng: &Prg) -> Self {
         todo!()
     }
 }
