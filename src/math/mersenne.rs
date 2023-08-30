@@ -21,7 +21,7 @@ pub trait MersenneField {
 
     fn inverse(&self) -> Self;
 
-    fn random(rng: &Prg) -> Self;
+    fn random(rng: &mut Prg) -> Self;
 }
 
 impl MersenneField for Mersenne61 {
@@ -98,8 +98,15 @@ impl MersenneField for Mersenne61 {
         }
     }
 
-    fn random(rng: &Prg) -> Self {
-        todo!()
+    fn random(prg: &mut Prg) -> Self {
+        let random_bytes = prg.next((u64::BITS / 8) as usize);
+        let random_value = u64::from_ne_bytes(
+            random_bytes
+                .try_into()
+                .expect("Expected a vector with 8 bytes"),
+        );
+
+        Self::new(random_value)
     }
 }
 

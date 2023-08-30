@@ -1,5 +1,6 @@
-use smol::math::mersenne::{Mersenne61, MersenneField};
 use rand::Rng;
+use smol::math::mersenne::{Mersenne61, MersenneField};
+use smol::utils::prg::Prg;
 
 #[test]
 fn mersenne61_new() {
@@ -58,7 +59,7 @@ fn mersenne61_inverse() {
 
     let mult = a.multiply(inv_a);
     assert_eq!(mult.value, 1);
-} 
+}
 
 #[test]
 fn mersenne61_inverse_random() {
@@ -70,4 +71,13 @@ fn mersenne61_inverse_random() {
 
     let mult = a.multiply(inv_a);
     assert_eq!(mult.value, 1);
+}
+
+#[test]
+fn mersenne61_prg() {
+    let mut prg = Prg::new(Some(vec![0x4a, 0x4b]));
+    let rand_mersenne = Mersenne61::random(&mut prg);
+
+    let product = rand_mersenne.multiply(rand_mersenne.inverse());
+    assert_eq!(product.value, 1);
 }
