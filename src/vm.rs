@@ -1,11 +1,12 @@
 use crate::math::mersenne::MersenneField;
-use crate::mpc::Share;
+use crate::mpc::{Share, MultTriple};
 use std::collections::HashMap;
 
 pub struct VirtualMachine<'a, T: MersenneField> {
     pub id: &'a str,
     pub private_values: HashMap<&'a str, T>,
     pub shares: HashMap<&'a str, Share<'a, T>>,
+    pub triples: HashMap<&'a str, MultTriple<'a, T>>
 }
 
 impl<'a, T: MersenneField> VirtualMachine<'a, T> {
@@ -14,6 +15,7 @@ impl<'a, T: MersenneField> VirtualMachine<'a, T> {
             id: id_machine,
             private_values: HashMap::new(),
             shares: HashMap::new(),
+            triples: HashMap::new(),
         }
     }
 
@@ -45,7 +47,7 @@ impl<'a, T: MersenneField> VirtualMachine<'a, T> {
         if let Some(share) = self.shares.get(id) {
             share
         } else {
-            panic!("The id is not registered in the virtual machine.")
+            panic!("The id `{}` is not registered in the virtual machine.", id);
         }
     }
 }

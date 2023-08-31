@@ -14,10 +14,15 @@ impl<'a, T: MersenneField> Share<'a, T> {
     }
 }
 
-pub fn distribute_shares<'a, T>(
+pub struct MultTriple<'a, T: MersenneField> {
+    pub id: &'a str,
+    pub shares: (Share<'a, T>, Share<'a, T>, Share<'a, T>),
+}
+
+pub fn distribute_shares<'a, 'b, T>(
     id_var: &'a str,
     id_owner: &'a str,
-    parties: Vec<&'a mut VirtualMachine<'a, T>>,
+    parties: Vec<&'b mut VirtualMachine<'a, T>>,
     prg: &mut Prg,
 ) where
     T: MersenneField,
@@ -63,10 +68,10 @@ pub fn mult_protocol<T>(
     todo!()
 }
 
-pub fn add_protocol<'a, T>(
-    parties: Vec<&mut VirtualMachine<'a, T>>,
-    id_a: &str,
-    id_b: &str,
+pub fn add_protocol<'a, 'b, T>(
+    parties: Vec<&'b mut VirtualMachine<'a, T>>,
+    id_a: &'a str,
+    id_b: &'a str,
     id_result: &'a str,
 ) where
     T: MersenneField,
@@ -76,7 +81,7 @@ pub fn add_protocol<'a, T>(
         let share_b = party.get_share(id_b);
 
         let value_sum = share_a.value.add(&share_b.value);
-        let share_sum = Share{
+        let share_sum = Share {
             id: id_result,
             value: value_sum,
         };
@@ -84,7 +89,7 @@ pub fn add_protocol<'a, T>(
     }
 }
 
-pub fn reconstruct_share<T>(parties: Vec<&mut VirtualMachine<T>>, id: &str) -> T
+pub fn reconstruct_share<'a, 'b, T>(parties: Vec<&'b VirtualMachine<T>>, id: &'a str) -> T
 where
     T: MersenneField,
 {
