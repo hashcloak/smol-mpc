@@ -13,15 +13,17 @@ pub trait MersenneField {
 
     fn new(value: u64) -> Self;
 
-    fn add(&self, other: Self) -> Self;
+    fn add(&self, other: &Self) -> Self;
 
     fn negate(&self) -> Self;
 
-    fn multiply(&self, other: Self) -> Self;
+    fn multiply(&self, other: &Self) -> Self;
 
     fn inverse(&self) -> Self;
 
-    fn random(rng: &mut Prg) -> Self;
+    fn subtract(&self, other: &Self) -> Self;
+
+    fn random(prg: &mut Prg) -> Self;
 }
 
 impl MersenneField for Mersenne61 {
@@ -38,7 +40,7 @@ impl MersenneField for Mersenne61 {
         }
     }
 
-    fn add(&self, other: Self) -> Self {
+    fn add(&self, other: &Self) -> Self {
         let sum = self.value + other.value;
         if sum >= Self::ORDER {
             Self {
@@ -47,6 +49,10 @@ impl MersenneField for Mersenne61 {
         } else {
             Self { value: sum }
         }
+    }
+
+    fn subtract(&self, other: &Self) -> Self {
+        return self.add(&other.negate());
     }
 
     fn inverse(&self) -> Self {
@@ -74,7 +80,7 @@ impl MersenneField for Mersenne61 {
         Self { value: k as u64 }
     }
 
-    fn multiply(&self, other: Self) -> Self {
+    fn multiply(&self, other: &Self) -> Self {
         let mult: u128 = (self.value as u128) * (other.value as u128);
         let mut a = mult >> Self::POWER;
         let mut b: u64 = mult as u64;
@@ -85,7 +91,7 @@ impl MersenneField for Mersenne61 {
         let a_wrap = Self { value: a as u64 };
         let b_wrap = Self { value: b };
 
-        a_wrap.add(b_wrap)
+        a_wrap.add(&b_wrap)
     }
 
     fn negate(&self) -> Self {
