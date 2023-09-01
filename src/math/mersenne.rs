@@ -60,7 +60,7 @@ impl MersenneField for Mersenne61 {
     }
 
     fn subtract(&self, other: &Self) -> Self {
-        return self.add(&other.negate());
+        self.add(&other.negate())
     }
 
     fn inverse(&self) -> Self {
@@ -82,7 +82,7 @@ impl MersenneField for Mersenne61 {
         }
 
         if k < 0 {
-            k = k + (Self::ORDER as i64);
+            k += Self::ORDER as i64;
         }
 
         Self { value: k as u64 }

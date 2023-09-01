@@ -1,4 +1,4 @@
-use rand::random;
+
 
 use crate::math::mersenne::MersenneField;
 use crate::utils::prg::Prg;
@@ -89,14 +89,14 @@ pub fn mult_protocol<'a, 'b, T>(
 pub fn distribute_pub_value<'a, 'b, T>(
     value: &T,
     id: &'a str,
-    parties: &mut Vec<&'b mut VirtualMachine<'a, T>>,
+    parties: &mut [&'b mut VirtualMachine<'a, T>],
 ) where
     T: MersenneField,
     'a: 'b,
 {
     parties[0].insert_share(id, Share::new(id, T::new(value.get_value())));
-    for i in 1..parties.len() {
-        parties[i].insert_share(id, Share::new(id, T::new(0)));
+    for party in parties.iter_mut().skip(1) {
+        party.insert_share(id, Share::new(id, T::new(0)));
     }
 }
 
@@ -111,15 +111,15 @@ pub fn multiply_by_const_protocol<'a, 'b, T>(
 {
     for party in parties {
         let share = party.get_share(id);
-        let value_mult = share.value.multiply(&value);
+        let value_mult = share.value.multiply(value);
 
         let share_mult = Share::new(id_result, value_mult);
         party.insert_share(id_result, share_mult);
     }
 }
 
-pub fn subtract_protocol<'a, 'b, T>(
-    parties: &mut Vec<&'b mut VirtualMachine<'a, T>>,
+pub fn subtract_protocol<'a, T>(
+    parties: &mut Vec<&mut VirtualMachine<'a, T>>,
     id_a: &'a str,
     id_b: &'a str,
     id_result: &'a str,
@@ -135,8 +135,8 @@ pub fn subtract_protocol<'a, 'b, T>(
     }
 }
 
-pub fn add_protocol<'a, 'b, T>(
-    parties: &mut Vec<&'b mut VirtualMachine<'a, T>>,
+pub fn add_protocol<'a, T>(
+    parties: &mut Vec<&mut VirtualMachine<'a, T>>,
     id_a: &'a str,
     id_b: &'a str,
     id_result: &'a str,
@@ -156,7 +156,7 @@ pub fn add_protocol<'a, 'b, T>(
     }
 }
 
-pub fn reconstruct_share<'a, 'b, T>(parties: &Vec<&'b mut VirtualMachine<T>>, id: &'a str) -> T
+pub fn reconstruct_share<T>(parties: &Vec<&mut VirtualMachine<T>>, id: &str) -> T
 where
     T: MersenneField,
 {
@@ -186,9 +186,9 @@ pub fn generate_triple<'a, 'b, T>(
     simulate_random_dist(id_triple.2, &mut *parties, &c, &mut *prg);
 }
 
-pub fn simulate_random_dist<'a, 'b, T>(
+pub fn simulate_random_dist<'a, T>(
     id: &'a str,
-    parties: &mut Vec<&'b mut VirtualMachine<'a, T>>,
+    parties: &mut Vec<&mut VirtualMachine<'a, T>>,
     value: &T,
     prg: &mut Prg,
 ) where
