@@ -75,9 +75,9 @@ pub fn mult_protocol<'a, 'b, T>(
 
     let epsilon = reconstruct_share(&*parties, "epsilon");
     let delta = reconstruct_share(&*parties, "delta");
-
-    multiply_by_const_protocol(&mut *parties, &epsilon, id_y, "t1");
-    multiply_by_const_protocol(&mut *parties, &delta, id_x, "t2");
+    
+    multiply_by_const_protocol(&mut *parties, &epsilon, triple_id.1, "t1");
+    multiply_by_const_protocol(&mut *parties, &delta, triple_id.0, "t2");
 
     add_protocol(&mut *parties, "t1", "t2", "sum");
     add_protocol(&mut *parties, "sum", triple_id.2, "sumc");
@@ -109,12 +109,12 @@ pub fn multiply_by_const_protocol<'a, 'b, T>(
     T: MersenneField,
     'a: 'b,
 {
-    for i in 0..parties.len() {
-        let share = parties[i].get_share(id);
+    for party in parties {
+        let share = party.get_share(id);
         let value_mult = share.value.multiply(&value);
 
         let share_mult = Share::new(id_result, value_mult);
-        parties[i].insert_share(id_result, share_mult);
+        party.insert_share(id_result, share_mult);
     }
 }
 
