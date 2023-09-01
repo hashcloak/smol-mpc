@@ -24,6 +24,7 @@ Computation Library to implement a pseudo-random generator using AES-CTR.
 ## Milestones
 
 - [ ] Fully document the source code.
+- [ ] Add a user-friendly output functionality for the virtual machine states.
 - [ ] Write a protocol for Beaver triple generation.
 - [ ] Allow support for other protocols.
 
