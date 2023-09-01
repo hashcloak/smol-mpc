@@ -21,6 +21,12 @@ For Secure Computation Library, we took the ideas used there in the math library
  as our underlying algebraic structure. We also took the idea from Secure 
 Computation Library to implement a pseudo-random generator using AES-CTR.
 
+## Milestones
+
+- [ ] Fully document the source code.
+- [ ] Write a protocol for Beaver triple generation.
+- [ ] Allow support for other protocols.
+
 ## Disclaimer
 
 We stress that the work presented here is purely educational and does not intend
