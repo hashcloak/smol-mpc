@@ -1,3 +1,5 @@
+use rand::random;
+
 use crate::math::mersenne::MersenneField;
 use crate::utils::prg::Prg;
 use crate::vm::VirtualMachine;
@@ -26,6 +28,7 @@ pub fn distribute_shares<'a, 'b, T>(
     prg: &mut Prg,
 ) where
     T: MersenneField,
+    'a: 'b,
 {
     let mut shares: Vec<Share<T>> = Vec::new();
     let mut sum = T::new(0);
@@ -56,20 +59,84 @@ pub fn distribute_shares<'a, 'b, T>(
     }
 }
 
-pub fn mult_protocol<T>(
-    parties: Vec<&mut VirtualMachine<T>>,
-    id_a: &str,
-    id_b: &str,
-    id_result: &str,
-    triple_id: &str,
+pub fn mult_protocol<'a, 'b, T>(
+    parties: &mut Vec<&'b mut VirtualMachine<'a, T>>,
+    id_x: &'a str,
+    id_y: &'a str,
+    id_result: &'a str,
+    triple_id: (&'a str, &'a str, &'a str),
+) where
+    T: MersenneField,
+    'a: 'b,
+{
+    // Computing epsilon and delta
+    subtract_protocol(&mut *parties, id_x, triple_id.0, "epsilon");
+    subtract_protocol(&mut *parties, id_y, triple_id.1, "delta");
+
+    let epsilon = reconstruct_share(&*parties, "epsilon");
+    let delta = reconstruct_share(&*parties, "delta");
+
+    multiply_by_const_protocol(&mut *parties, &epsilon, id_y, "t1");
+    multiply_by_const_protocol(&mut *parties, &delta, id_x, "t2");
+
+    add_protocol(&mut *parties, "t1", "t2", "sum");
+    add_protocol(&mut *parties, "sum", triple_id.2, "sumc");
+
+    distribute_pub_value(&epsilon.multiply(&delta), "epsdelt", &mut *parties);
+    add_protocol(&mut *parties, "sumc", "epsdelt", id_result);
+}
+
+pub fn distribute_pub_value<'a, 'b, T>(
+    value: &T,
+    id: &'a str,
+    parties: &mut Vec<&'b mut VirtualMachine<'a, T>>,
+) where
+    T: MersenneField,
+    'a: 'b,
+{
+    parties[0].insert_share(id, Share::new(id, T::new(value.get_value())));
+    for i in 1..parties.len() {
+        parties[i].insert_share(id, Share::new(id, T::new(0)));
+    }
+}
+
+pub fn multiply_by_const_protocol<'a, 'b, T>(
+    parties: &mut Vec<&'b mut VirtualMachine<'a, T>>,
+    value: &T,
+    id: &'a str,
+    id_result: &'a str,
+) where
+    T: MersenneField,
+    'a: 'b,
+{
+    for i in 0..parties.len() {
+        let share = parties[i].get_share(id);
+        let value_mult = share.value.multiply(&value);
+
+        let share_mult = Share::new(id_result, value_mult);
+        parties[i].insert_share(id_result, share_mult);
+    }
+}
+
+pub fn subtract_protocol<'a, 'b, T>(
+    parties: &mut Vec<&'b mut VirtualMachine<'a, T>>,
+    id_a: &'a str,
+    id_b: &'a str,
+    id_result: &'a str,
 ) where
     T: MersenneField,
 {
-    todo!()
+    multiply_by_const_protocol(&mut *parties, &T::new(1).negate(), id_b, "subtraction");
+    add_protocol(&mut *parties, id_a, "subtraction", id_result);
+
+    // Remove intermediate values
+    for party in parties {
+        party.shares.remove("subtraction");
+    }
 }
 
 pub fn add_protocol<'a, 'b, T>(
-    parties: Vec<&'b mut VirtualMachine<'a, T>>,
+    parties: &mut Vec<&'b mut VirtualMachine<'a, T>>,
     id_a: &'a str,
     id_b: &'a str,
     id_result: &'a str,
@@ -89,7 +156,7 @@ pub fn add_protocol<'a, 'b, T>(
     }
 }
 
-pub fn reconstruct_share<'a, 'b, T>(parties: Vec<&'b VirtualMachine<T>>, id: &'a str) -> T
+pub fn reconstruct_share<'a, 'b, T>(parties: &Vec<&'b mut VirtualMachine<T>>, id: &'a str) -> T
 where
     T: MersenneField,
 {
@@ -100,4 +167,47 @@ where
     }
 
     value
+}
+
+pub fn generate_triple<'a, 'b, T>(
+    parties: &mut Vec<&'b mut VirtualMachine<'a, T>>,
+    id_triple: (&'a str, &'a str, &'a str),
+    prg: &mut Prg,
+) where
+    T: MersenneField,
+    'a: 'b,
+{
+    let a = T::random(&mut *prg);
+    let b = T::random(&mut *prg);
+    let c = a.multiply(&b);
+
+    simulate_random_dist(id_triple.0, &mut *parties, &a, &mut *prg);
+    simulate_random_dist(id_triple.1, &mut *parties, &b, &mut *prg);
+    simulate_random_dist(id_triple.2, &mut *parties, &c, &mut *prg);
+}
+
+pub fn simulate_random_dist<'a, 'b, T>(
+    id: &'a str,
+    parties: &mut Vec<&'b mut VirtualMachine<'a, T>>,
+    value: &T,
+    prg: &mut Prg,
+) where
+    T: MersenneField,
+{
+    let mut shares: Vec<Share<T>> = Vec::new();
+    let mut sum = T::new(0);
+    for _ in 0..parties.len() - 1 {
+        let random_elem = T::random(prg);
+        sum = sum.add(&random_elem);
+        let share_random = Share::new(id, random_elem);
+        shares.push(share_random);
+    }
+
+    let last_value = value.subtract(&sum);
+    let share_last_value = Share::new(id, last_value);
+    shares.push(share_last_value);
+
+    for party in parties {
+        party.insert_share(id, shares.pop().unwrap());
+    }
 }

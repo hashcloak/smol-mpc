@@ -24,6 +24,8 @@ pub trait MersenneField {
     fn subtract(&self, other: &Self) -> Self;
 
     fn random(prg: &mut Prg) -> Self;
+
+    fn get_value(&self) -> u64;
 }
 
 impl MersenneField for Mersenne61 {
@@ -34,10 +36,16 @@ impl MersenneField for Mersenne61 {
         if value < Self::ORDER {
             Self { value }
         } else {
+            // TODO: This is provisional while I find a way to do it in constant
+            // time.
             Self {
-                value: value - Self::ORDER,
+                value: value % Self::ORDER,
             }
         }
+    }
+
+    fn get_value(&self) -> u64 {
+        self.value
     }
 
     fn add(&self, other: &Self) -> Self {

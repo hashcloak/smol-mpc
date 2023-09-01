@@ -66,6 +66,10 @@ impl Prg {
         self.init()
     }
 
+    pub fn get_counter(&self) -> u64 {
+        self.counter
+    }
+
     /// Generates a stream of random bytes
     pub fn next(&mut self, n_bytes: usize) -> Vec<u8> {
         if n_bytes == 0 {
