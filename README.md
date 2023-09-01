@@ -1,6 +1,6 @@
 # smol
 
-![Rust](https://github.com/hashcloak/smol/actions/workflows/rust.yml/badge.svg)
+![Test](https://github.com/hashcloak/smol/actions/workflows/rust.yml/badge.svg)
 [![Dependency status](https://deps.rs/repo/github/hashcloak/smol/status.svg)](https://deps.rs/repo/github/hashcloak/smol)
 [![Documentation](https://docs.rs/smol/badge.svg)](https://docs.rs/smol/)
 
