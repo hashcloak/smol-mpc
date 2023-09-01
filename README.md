@@ -1,7 +1,8 @@
 # smol
 
 ![Rust](https://github.com/hashcloak/smol/actions/workflows/rust.yml/badge.svg)
-![Dependency status](https://deps.rs/repo/github/hashcloak/smol/status.svg) 
+[![Dependency status](https://deps.rs/repo/github/hashcloak/smol/status.svg)](https://deps.rs/repo/github/hashcloak/smol)
+[![Codecov](https://codecov.io/github/hashcloak/smol/coverage.svg?branch=main)](https://codecov.io/gh/hashcloak/smol)
 
 Smol is a tiny library to learn Secure Multiparty Computation (MPC) basics using
 the Rust programming language. Smol allows to the user to experiment with toy
