@@ -13,5 +13,15 @@ which we consider the virtual machine. In our case is more similar to the way in
 which ideal functionalities are specified in the theory of MPC, that is, the 
 memory of each virtual machine is addressed using IDs for each variable stored.
 For Secure Computation Library, we took the ideas used there in the math library
- to implement a Mersenne61 field as the underlying algebraic structure of our 
-protocols.
+ to implement the $\mathbb{F}_p$ with $p = 2^{61} - 1$ (which is a Mersenne prime)
+ as our underlying algebraic structure. We also took the idea from Secure 
+Computation Library to implement a pseudo-random generator using AES-CTR.
+
+## Disclaimer
+
+We stress that the work presented here is purely educational and does not intend
+to show a secure or efficient implementation. The core of the library is to give 
+to the user an idea of how protocol work in a very high level. So, the
+implementation may have security issues and sometimes it may not represent all 
+the details and caveats of a real-world secure and efficient implementation of 
+of the techniques covered here.
