@@ -1,6 +1,6 @@
 use rand::Rng;
-use smol::math::mersenne::{Mersenne61, MersenneField};
-use smol::utils::prg::Prg;
+use smol_mpc::math::mersenne::{Mersenne61, MersenneField};
+use smol_mpc::utils::prg::Prg;
 
 #[test]
 fn mersenne61_new() {

@@ -1,4 +1,4 @@
-use smol::utils::prg::Prg;
+use smol_mpc::utils::prg::Prg;
 
 #[test]
 fn create_prg_default() {

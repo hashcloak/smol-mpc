@@ -1,9 +1,9 @@
 use std::vec;
 
-use smol::math::mersenne::{Mersenne61, MersenneField};
-use smol::mpc;
-use smol::utils::prg::Prg;
-use smol::vm::VirtualMachine;
+use smol_mpc::math::mersenne::{Mersenne61, MersenneField};
+use smol_mpc::mpc;
+use smol_mpc::utils::prg::Prg;
+use smol_mpc::vm::VirtualMachine;
 
 type Fp = Mersenne61;
 
@@ -70,7 +70,7 @@ fn simulate_random_distribution() {
     mpc::simulate_random_dist("a", &mut vec![&mut alice, &mut bob], &value, &mut prg);
 
     let reconstruction = mpc::reconstruct_share(&mut vec![&mut alice, &mut bob], "a");
-    assert_eq!(reconstruction.get_value(), 10);
+    assert_eq!(reconstruction.value(), 10);
 }
 
 #[test]
@@ -85,7 +85,7 @@ fn generate_triple() {
     let rec_b = mpc::reconstruct_share(&mut vec![&mut alice, &mut bob], "b");
     let rec_c = mpc::reconstruct_share(&mut vec![&mut alice, &mut bob], "c");
 
-    assert_eq!(rec_a.multiply(&rec_b).get_value(), rec_c.get_value());
+    assert_eq!(rec_a.multiply(&rec_b).value(), rec_c.value());
 }
 
 #[test]
@@ -141,7 +141,7 @@ fn multiplication() {
 
     let mult_reconst = mpc::reconstruct_share(&mut vec![&mut alice, &mut bob], "prod");
 
-    assert_eq!(mult_reconst.get_value(), 8)
+    assert_eq!(mult_reconst.value(), 8)
 }
 
 #[test]
@@ -172,5 +172,5 @@ fn distribute_pub_value() {
     mpc::distribute_pub_value(&value, "v", &mut vec![&mut alice, &mut bob]);
 
     let rec_value = mpc::reconstruct_share(&mut vec![&mut alice, &mut bob], "v");
-    assert_eq!(rec_value.get_value(), 100);
+    assert_eq!(rec_value.value(), 100);
 }

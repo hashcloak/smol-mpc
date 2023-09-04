@@ -1,5 +1,3 @@
-
-
 use crate::math::mersenne::MersenneField;
 use crate::utils::prg::Prg;
 use crate::vm::VirtualMachine;
@@ -75,7 +73,7 @@ pub fn mult_protocol<'a, 'b, T>(
 
     let epsilon = reconstruct_share(&*parties, "epsilon");
     let delta = reconstruct_share(&*parties, "delta");
-    
+
     multiply_by_const_protocol(&mut *parties, &epsilon, triple_id.1, "t1");
     multiply_by_const_protocol(&mut *parties, &delta, triple_id.0, "t2");
 
@@ -94,7 +92,7 @@ pub fn distribute_pub_value<'a, 'b, T>(
     T: MersenneField,
     'a: 'b,
 {
-    parties[0].insert_share(id, Share::new(id, T::new(value.get_value())));
+    parties[0].insert_share(id, Share::new(id, T::new(value.value())));
     for party in parties.iter_mut().skip(1) {
         party.insert_share(id, Share::new(id, T::new(0)));
     }

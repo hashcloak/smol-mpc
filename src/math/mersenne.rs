@@ -1,31 +1,56 @@
-/// The source code for Mersenne61 was taken from
-/// https://github.com/anderspkd/secure-computation-library/blob/master/src/scl/math/mersenne61.cc
+//! Implements all the functionalities for Mersenne fields.
+//!
+//! In multi-party computation protocols, it is common to use an underlying
+//! algebraic structure in wich all the secure computations are performed. This
+//! module defines all the basic functionalities to manipulate the Mersenne
+//! fields used in the protocols supported by the library.
+//!
+//! The source code for `Mersenne61` was taken from [Secure Computation Library].
+//!
+//! [Secure Computation Library]: https://github.com/anderspkd/secure-computation-library/blob/master/src/scl/math/mersenne61.cc
+
 use crate::utils::prg::Prg;
 
+/// Defines an element in a Mersenne field $\mathbb{F}_p$ with $p = 2 ^ {61} - 1$.
 #[derive(Clone)]
 pub struct Mersenne61 {
+    /// Value of the element. This value will belong to $\mathbb{F}_p$.
     pub value: u64,
 }
 
+/// Defines the operations over Mersenne fields elements.
 pub trait MersenneField {
+    /// Power of the Mersenne field. Mersenne fields are of the form
+    /// $\mathbb{F}_p$ with $p = 2^n - 1$. This variable represents $n$.
     const POWER: u64;
+
+    /// Order of the Mersenne field.
     const ORDER: u64;
 
+    /// Creates an element in a Mersenne field.
     fn new(value: u64) -> Self;
 
+    /// Computes the sum between two elements in a Mersenne field.
     fn add(&self, other: &Self) -> Self;
 
+    /// Given a field element $a \in \mathbb{F}_p$, returns $-a$.
     fn negate(&self) -> Self;
 
+    /// Computes the product of two elements in the Mersenne field.
     fn multiply(&self, other: &Self) -> Self;
 
+    /// Given a field element $a \in \mathbb{F}_p$, returns $a^{-1}$.
     fn inverse(&self) -> Self;
 
+    /// Computes the subtraction between two elements in the field.
     fn subtract(&self, other: &Self) -> Self;
 
+    /// Generates a random element in the Mersenne field provided a
+    /// pseudo-random generator.
     fn random(prg: &mut Prg) -> Self;
 
-    fn get_value(&self) -> u64;
+    /// Returns the value of the element in the Mersenne field.
+    fn value(&self) -> u64;
 }
 
 impl MersenneField for Mersenne61 {
@@ -44,7 +69,7 @@ impl MersenneField for Mersenne61 {
         }
     }
 
-    fn get_value(&self) -> u64 {
+    fn value(&self) -> u64 {
         self.value
     }
 
