@@ -8,6 +8,7 @@
 //! This implementation is based on the one used in [Secure Computation Library].
 //! 
 //! [Secure Computation Library]: https://github.com/anderspkd/secure-computation-library/blob/master/include/scl/util/prg.h
+
 use aes::cipher::{KeyIvInit, StreamCipher};
 use std::vec;
 
