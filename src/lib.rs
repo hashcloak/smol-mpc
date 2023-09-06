@@ -12,7 +12,7 @@
 //! Each virtual machine will have a memory of two types. The private memory 
 //! will store all the that are known by the virtual machine. The shared memory 
 //! will store the shares distributed in a protocol execution. Both types of 
-//! memory is implemented in an ID-value structure, which means that all the 
+//! memory are implemented in an ID-value structure, which means that all the 
 //! values will be retrieved and stored by a user-defined ID of type [`&str`]. 
 //! So sending a value from one machine to the other corresponds to retrieving a 
 //! value from the first party using the ID, and storing it in the memory of 
