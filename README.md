@@ -2,7 +2,7 @@
 
 ![Rust](https://github.com/hashcloak/smol-mpc/actions/workflows/rust.yml/badge.svg)
 [![Dependency status](https://deps.rs/repo/github/hashcloak/smol-mpc/status.svg)](https://deps.rs/repo/github/hashcloak/smol-mpc)
-[![Documentation](https://docs.rs/smol-mpc/badge.svg)](https://docs.rs/smol-mpc/)
+[![Documentation](https://docs.rs/smol_mpc/badge.svg)](https://docs.rs/smol-mpc/latest/smol_mpc/)
 
 Smol-mpc is a tiny library to learn Secure Multiparty Computation (MPC) basics using
 the Rust programming language. Smol-mpc allows to the user to experiment with toy
