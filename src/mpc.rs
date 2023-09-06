@@ -1,7 +1,7 @@
 //! Implements all the MPC protocols and functionalities to simulate a secure
 //! computation.
-//! 
-//! In an MPC protocol based on secret-sharing, it is common to define five 
+//!
+//! In an MPC protocol based on secret-sharing, it is common to define five
 //! standar protocols to allow general computation:
 //! - A protocol for secure multiplication.
 //! - A protocol to perform linear combinations between private values.
@@ -9,11 +9,11 @@
 //! - A protocol to reconstruct a value from its shares.
 //! - A protocol to generate correlated randomness needed in the execution of
 //! the protocol.
-//! 
+//!
 //! At the time of writting, we only support one protocol based on additive
 //! secret-sharing schemes using Beaver triples for multiplications with passive
-//! security. From the list presented above, we only cover the first four 
-//! elements. The generation or correlated randomness via secure protocols is 
+//! security. From the list presented above, we only cover the first four
+//! elements. The generation or correlated randomness via secure protocols is
 //! not implemented yet. Those functionalities are emulated using PRGs.
 
 use crate::math::mersenne::MersenneField;
@@ -21,8 +21,8 @@ use crate::utils::prg::Prg;
 use crate::vm::VirtualMachine;
 
 /// Represents an additive share of a private element in certain algebraic
-/// structure. 
-/// 
+/// structure.
+///
 /// We need to make clear that the `value` field **do not** represent the value
 /// that the share is trying to hide. On the contrary, this field stores the
 /// value that a party holds once the shares of a private element have been
@@ -43,8 +43,8 @@ impl<'a, T: MersenneField> Share<'a, T> {
 }
 
 /// Distributes a share among a set of parties.
-/// 
-/// This function distributes shares of a value stored in the private memory of 
+///
+/// This function distributes shares of a value stored in the private memory of
 /// a party with ID `id_owner`. The distribution of shares is done among the
 /// parties provided in the parameter `parties`. The shares computed and
 /// distributed will be stored in the share memory of each parties with the ID
@@ -88,7 +88,7 @@ pub fn distribute_shares<'a, 'b, T>(
 }
 
 /// Multiplicates two secret-shared values distributed among a set of parties.
-/// 
+///
 /// This protocol executes the multiplication between two secret-shared values
 /// whose shares has been distributed and stored in the memory of the parties
 /// involved in the protocol. The multiplication is executed using a
@@ -135,7 +135,7 @@ pub fn mult_protocol<'a, 'b, T>(
 }
 
 /// Distributes shares of a publicly known value.
-/// 
+///
 /// This method distributes shares among a set of parties of a publicly known
 /// value. The shares are stored in the share memory of each party using the
 /// provided ID.
@@ -155,10 +155,10 @@ pub fn distribute_pub_value<'a, 'b, T>(
 
 /// Computes the secure multiplication of a publicly known value with a
 /// previously secret-shared value.
-/// 
+///
 /// The function multiplies a public value with the shares with a private value
 /// that has been already secret-shared among the provided set of parties. The
-/// result of this computation will be shares of the result stored in the 
+/// result of this computation will be shares of the result stored in the
 /// memory of each party under ID `id_result`.
 pub fn multiply_by_const_protocol<'a, 'b, T>(
     parties: &mut Vec<&'b mut VirtualMachine<'a, T>>,
@@ -179,7 +179,7 @@ pub fn multiply_by_const_protocol<'a, 'b, T>(
 }
 
 /// Computes the secure subtraction between two secret shared values.
-/// 
+///
 /// Computes the secure subraction between the shared value stored with ID
 /// `id_a` with the value store with ID `id_b`. The result of this function will
 /// be be the result of the operation stored as shares under the ID `id_result`.
@@ -201,7 +201,7 @@ pub fn subtract_protocol<'a, T>(
 }
 
 /// Adds two secret-shared values distributed among a set of parties.
-/// 
+///
 /// This protocol executes the addition between two secret-shared values
 /// whose shares has been distributed and stored in the memory of the parties
 /// involved in the protocol. The addition is executed locally by the parties.
@@ -229,6 +229,10 @@ pub fn add_protocol<'a, T>(
     }
 }
 
+/// Reconstructs a previously shared value among a set of parties.
+///
+/// The method reconstructs a shared value among the provided set of parties and
+/// identified with the provided ID.
 pub fn reconstruct_share<T>(parties: &Vec<&mut VirtualMachine<T>>, id: &str) -> T
 where
     T: MersenneField,
@@ -242,6 +246,13 @@ where
     value
 }
 
+/// Creates and distributes shares of multiplication triples among a set of
+/// parties.
+///
+/// This method simulates the generation of one multiplication (Beaver) triple
+/// among the set of parties. After the generation of the triple, the function
+/// computes additive shares of such triple. Those shares are stored in the
+/// share memory of each party with the provided ID tuple.
 pub fn generate_triple<'a, 'b, T>(
     parties: &mut Vec<&'b mut VirtualMachine<'a, T>>,
     id_triple: (&'a str, &'a str, &'a str),
@@ -259,6 +270,12 @@ pub fn generate_triple<'a, 'b, T>(
     simulate_random_dist(id_triple.2, &mut *parties, &c, &mut *prg);
 }
 
+/// Simulates the distribution of randomly generated shares of a value.
+///
+/// This function acts as a helper to simulate that a value have been
+/// secret-shared among the parties. This means that there is no protocol
+/// execution that perform this process. At the end, parties will have shares
+/// of the provided value stored in the share memory under the provided ID.
 pub fn simulate_random_dist<'a, T>(
     id: &'a str,
     parties: &mut Vec<&mut VirtualMachine<'a, T>>,

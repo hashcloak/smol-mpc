@@ -1,8 +1,8 @@
 //! Implements a basic representation of a virtual machine.
-//! 
+//!
 //! In the context of this library, a virtual machine represents a participant
 //! or player in an MPC protocol. In a real-world execution, a participant is
-//! a node in a network that receives, processes, and send information according 
+//! a node in a network that receives, processes, and send information according
 //! to a protocol specification.
 
 use crate::math::mersenne::MersenneField;
@@ -10,24 +10,24 @@ use crate::mpc::Share;
 use std::collections::HashMap;
 
 /// Defines a virtual machine.
-/// 
+///
 /// The virtual machine is represented as a node that has an ID based memory in
 /// which it saves the information. All the machines have an ID used to identify
 /// them during a protocol execution. The inspiration of this design comes from
 /// the way in wich an ideal functionality is specified in a Universal
 /// Composability proof, that is, as a entity that has a ID based memory to
-/// store elements and that also sends, process and receives information. 
+/// store elements and that also sends, process and receives information.
 /// However, we stress that this implementation is not the implementation of an
-/// ideal functionality, we just take the some elements. 
-/// 
-/// The memory is divided into two types. The private memory will hold values 
-/// that a certain node knows but are not secret-shared among the parties. The 
-/// shares memory stores the shares of a certain value. To make things simple, 
-/// when a value is public, it is stored in the private memory because, at the 
-/// end, it is a value that is known all the machines. Each variable stored in 
+/// ideal functionality, we just take the some elements.
+///
+/// The memory is divided into two types. The private memory will hold values
+/// that a certain node knows but are not secret-shared among the parties. The
+/// shares memory stores the shares of a certain value. To make things simple,
+/// when a value is public, it is stored in the private memory because, at the
+/// end, it is a value that is known all the machines. Each variable stored in
 /// the memory has also an ID to refer to it during the protocol execution. In
 /// particular, if a value is secret-shared among a certain set of parties, it
-/// will have the same ID in memory for all the virtual machines involved in the 
+/// will have the same ID in memory for all the virtual machines involved in the
 /// protocol.
 pub struct VirtualMachine<'a, T: MersenneField> {
     /// ID of the virtual machine.
