@@ -2,6 +2,13 @@
 name = "smol-mpc"
 version = "0.1.0"
 edition = "2021"
+categories = ["cryptography"]
+keywords = ["mpc", "cryptography"]
+readme = "README.md"
+repository = "https://github.com/hashcloak/smol-mpc"
+description = "A port of TinySMPC into Rust."
+license = "GPL-3.0-only"
+license-file = "LICENSE"
 
 [dependencies]
 rand = "0.8.5"
