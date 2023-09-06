@@ -1,4 +1,4 @@
-# smol
+# smol-mpc
 
 ![Rust](https://github.com/hashcloak/smol-mpc/actions/workflows/rust.yml/badge.svg)
 [![Dependency status](https://deps.rs/repo/github/hashcloak/smol-mpc/status.svg)](https://deps.rs/repo/github/hashcloak/smol-mpc)
@@ -25,7 +25,7 @@ The documentation for this library and some examples of how to use it can be fou
 
 ## Milestones
 
-- [ ] Fully document the source code.
+- [X] ~Fully document the source code.~
 - [ ] Add a user-friendly output functionality for the virtual machine states.
 - [ ] Write a protocol for Beaver triple generation.
 - [ ] Allow support for other protocols.
