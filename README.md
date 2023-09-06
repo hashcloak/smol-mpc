@@ -21,7 +21,7 @@ For Secure Computation Library, we took the ideas used there in the math library
  as our underlying algebraic structure. We also took the idea from Secure 
 Computation Library to implement a pseudo-random generator using AES-CTR.
 
-The documentation for this library and some examples of how to use it can be found [here](https://docs.rs/smol-mpc/)
+The documentation for this library and some examples of how to use it can be found [here](https://docs.rs/smol-mpc/).
 
 ## Milestones
 
