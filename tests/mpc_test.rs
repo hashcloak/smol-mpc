@@ -117,14 +117,6 @@ fn multiplication() {
         &mut prg,
     );
 
-    let x1 = mpc::reconstruct_share(&mut vec![&mut alice, &mut bob], "x1");
-    let x2 = mpc::reconstruct_share(&mut vec![&mut alice, &mut bob], "x2");
-    let x3 = mpc::reconstruct_share(&mut vec![&mut alice, &mut bob], "x3");
-
-    println!("X1 value: {:?}", x1.value);
-    println!("X2 value: {:?}", x2.value);
-    println!("X3 value: {:?}", x3.value);
-
     alice.insert_priv_value("a", Fp::new(4));
     mpc::distribute_shares("a", "alice", vec![&mut alice, &mut bob], &mut prg);
 
